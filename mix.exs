@@ -30,4 +30,5 @@ defmodule Cbserverapi.Mixfile do
      {:exrabbit, git: "https://github.com/redvers/exrabbit.git"}
     ]
   end
+  import_config "./cb_creds*.exs"
 end
