@@ -16,6 +16,11 @@
   event you wish to consume.  To consume all, use "#".  To consume ingress.event.filemod,
   use "ingress.event.filemod".
 
+  NB: You also need to choose which protobuf file to decode against otherwise you'll
+  get what appears to be corrupt data:
+	* ln -s sensor_events.proto.4 sensor_events.proto	# v4
+	* ln -s sensor_events.proto.5 sensor_events.proto	# v5
+
   If you need to consume more than one type but not all you can either:
     * Specify all in /etc/cb/cb.conf and run multiple GenServers.
     * Specify only the events you want in /etc/cb/cb.conf and consume all "#"
@@ -57,6 +62,6 @@
   See Also:
 
     * Cbserverapi - The GenServer you 'use'
-    * Cbserverapi.Creds - Extracts credentials from /etc/cb/cb.conf file
+    * Cbserverapi.Creds - Extracts credentials from config/config.exs
     * Cbprotobuf - Provides supporting functions to decode protobuf-formatted binary data into records.
 
