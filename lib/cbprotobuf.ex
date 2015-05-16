@@ -1,3 +1,4 @@
 defmodule Cbprotobuf do
-  use Protobuf, from: Path.expand("./sensor_events.proto", __DIR__)
+  version = Application.get_env(:cbserver, version)
+  use Protobuf, from: Path.expand("./sensor_events.proto." <> Integer.to_string(version), __DIR__)
 end
