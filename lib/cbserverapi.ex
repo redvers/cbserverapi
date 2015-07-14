@@ -66,15 +66,22 @@ defmodule Cbserverapi do
 
   use GenServer
   require Logger
+  defstruct username: "user", password: "password", host: '127.0.0.1', port: 5004
 
   import Exrabbit.Defs
     defmacro __using__(_) do
       quote location: :keep do
       require Logger
 
-      def start_link(key) do
-        GenServer.start_link(__MODULE__, {key, []}, name: String.to_atom("CB_" <> key))
+
+      def start_link(creds = %Cbserverapi{}, key) do
+        GenServer.start_link(__MODULE__, {key, creds}, name: String.to_atom("CB_" <> key))
       end
+
+      def start_link(key) do
+        GenServer.start_link(__MODULE__, {key, %Cbserverapi{}}, name: String.to_atom("CB_" <> key))
+      end
+
 
       def init(incoming) do
         Cbserverapi.init(incoming)
@@ -87,15 +94,15 @@ defmodule Cbserverapi do
     end
   end
 
-  def init({key, _state}) do
-    {:ok, [channel, queue]} = connect(key)
-     sub = basic_consume(queue: queue, no_ack: true)
-     basic_consume_ok(consumer_tag: consumer_tag) = :amqp_channel.subscribe channel, sub, self
-     {:ok, HashDict.new}
+  def init({key, state}) do
+#    {:ok, [channel, queue]} = connect(key)
+#     sub = basic_consume(queue: queue, no_ack: true)
+#     basic_consume_ok(consumer_tag: consumer_tag) = :amqp_channel.subscribe channel, sub, self
+     {:ok, state}
   end
     
   defp connect(key) do
-    channel = getcreds |> Exrabbit.Utils.connect |> Exrabbit.Utils.channel
+    channel = __MODULE__.getcreds |> Exrabbit.Utils.connect |> Exrabbit.Utils.channel
     queue = Exrabbit.Utils.declare_queue(channel)
     {:"queue.bind_ok"} = Exrabbit.Utils.bind_queue(channel, queue, "api.events", key)
     {:ok, [channel, queue]}
