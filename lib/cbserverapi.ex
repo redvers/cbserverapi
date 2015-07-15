@@ -1,3 +1,4 @@
+require Logger
 defmodule Cbserverapi do
   @moduledoc """
   Implements a GenServer to receive and process sensor events from the RabbitMQ bus.
@@ -95,21 +96,21 @@ defmodule Cbserverapi do
   end
 
   def init({key, state}) do
-#    {:ok, [channel, queue]} = connect(key)
-#     sub = basic_consume(queue: queue, no_ack: true)
-#     basic_consume_ok(consumer_tag: consumer_tag) = :amqp_channel.subscribe channel, sub, self
+    {:ok, [channel, queue]} = connect(key, state)
+     sub = basic_consume(queue: queue, no_ack: true)
+     basic_consume_ok(consumer_tag: consumer_tag) = :amqp_channel.subscribe channel, sub, self
      {:ok, state}
   end
     
-  defp connect(key) do
-    channel = __MODULE__.getcreds |> Exrabbit.Utils.connect |> Exrabbit.Utils.channel
+  defp connect(key, state) do
+    channel = state |> struct2array |> Exrabbit.Utils.connect |> Exrabbit.Utils.channel
     queue = Exrabbit.Utils.declare_queue(channel)
     {:"queue.bind_ok"} = Exrabbit.Utils.bind_queue(channel, queue, "api.events", key)
     {:ok, [channel, queue]}
   end
 
-  def getcreds do
-    Cbserverapi.Creds.getcreds
+  def struct2array(%Cbserverapi{host: host, password: pass, port: port, username: user}) do
+    [host: host, password: pass, port: port, username: user]
   end
 
   defmacro __before_compile__(_env) do
