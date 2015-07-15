@@ -3,7 +3,7 @@ defmodule Cbserverapi.Mixfile do
 
   def project do
     [app: :cbserverapi,
-     version: "0.0.2",
+     version: "0.0.3",
      elixir: "~> 1.0",
      deps: deps]
   end
@@ -25,8 +25,8 @@ defmodule Cbserverapi.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:exprotobuf, "~> 0.8.5"},
-     {:gpb, github: "tomas-abrahamsson/gpb", tag: "3.17.2"},
+    [{:exprotobuf, "~> 0.10.1"},
+     {:gpb, "~> 3.18.6"},
      {:exrabbit, git: "https://github.com/redvers/exrabbit.git"}
     ]
   end
