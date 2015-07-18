@@ -12,7 +12,7 @@ defmodule Cbserverapi.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :exrabbit, :xmerl]]
+    [applications: [:logger, :exrabbit, :xmerl, :exprotobuf, :gbp]]
   end
 
   # Dependencies can be Hex packages:
