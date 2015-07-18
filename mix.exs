@@ -3,7 +3,7 @@ defmodule Cbserverapi.Mixfile do
 
   def project do
     [app: :cbserverapi,
-     version: "0.0.3",
+     version: "0.0.4",
      elixir: "~> 1.0",
      deps: deps]
   end
@@ -12,7 +12,7 @@ defmodule Cbserverapi.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:logger, :exrabbit, :xmerl]]
   end
 
   # Dependencies can be Hex packages:
