@@ -67,7 +67,7 @@ defmodule Cbserverapi do
 
   use GenServer
   require Logger
-  defstruct username: "user", password: "password", host: '127.0.0.1', port: 5004
+  defstruct username: "user", password: "password", host: '127.0.0.1', port: 5004, heartbeat: 1
 
   import Exrabbit.Defs
     defmacro __using__(_) do
