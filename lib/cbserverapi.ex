@@ -67,13 +67,13 @@ defmodule Cbserverapi do
 
   use GenServer
   require Logger
-  defstruct username: "user", password: "password", host: '127.0.0.1', port: 5004, heartbeat: 1
+
+  defstruct username: "user", password: "password", host: '127.0.0.1', port: 5004, heartbeat: 1, stash: HashDict.new
 
   import Exrabbit.Defs
     defmacro __using__(_) do
       quote location: :keep do
       require Logger
-
 
       def start_link(creds = %Cbserverapi{}, key) do
         GenServer.start_link(__MODULE__, {key, creds}, name: String.to_atom("CB_" <> key))
@@ -103,15 +103,19 @@ defmodule Cbserverapi do
   end
     
   defp connect(key, state) do
-    channel = state |> struct2array |> Exrabbit.Utils.connect |> Exrabbit.Utils.channel
+    connection = state |> struct2array |> Exrabbit.Utils.connect
+    channel = Exrabbit.Utils.channel(connection)
     queue = Exrabbit.Utils.declare_queue(channel)
     {:"queue.bind_ok"} = Exrabbit.Utils.bind_queue(channel, queue, "api.events", key)
+    Process.link(connection)
+    Process.link(channel)
     {:ok, [channel, queue]}
   end
 
   def struct2array(%Cbserverapi{host: host, password: pass, port: port, username: user}) do
     [host: host, password: pass, port: port, username: user]
   end
+
 
   defmacro __before_compile__(_env) do
     quote do
